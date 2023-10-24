@@ -7,6 +7,9 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
+/*
+ * Provides database accessibility for user entities
+ */
 @Dao
 interface UserDAO {
 
@@ -31,6 +34,9 @@ interface UserDAO {
 
 }
 
+/*
+ * Provides database accessibility for deck entities
+ */
 @Dao
 interface DeckDAO {
 
@@ -49,6 +55,9 @@ interface DeckDAO {
 
 }
 
+/*
+ * Provides database accessibility for deck card entities
+ */
 @Dao
 interface DeckCardDAO {
 

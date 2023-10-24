@@ -5,6 +5,9 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/*
+ * Establishes the user entity data class
+ */
 @Entity(tableName = "users")
 data class UserEntity(
     @PrimaryKey(autoGenerate = true)
@@ -13,6 +16,9 @@ data class UserEntity(
     val password: String
 )
 
+/*
+ * Establishes the deck entity data class
+ */
 @Entity(
     indices = [Index("userId")],
     tableName = "decks",
@@ -33,6 +39,9 @@ data class DeckEntity(
     val userId: Int
 )
 
+/*
+ * Establishes the deck card entity data class
+ */
 @Entity(
     indices = [Index("deckId")],
     tableName = "deck_cards",

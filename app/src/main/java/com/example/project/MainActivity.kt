@@ -5,17 +5,26 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -47,6 +56,11 @@ import com.example.project.ui.theme.ProjectTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.content.ContextCompat.startActivity
 import java.time.Duration
 
@@ -72,17 +86,46 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     var currentContext = LocalContext.current
 
-    Column {
-        Text(text = "Welcome to the Flesh & Blood Deckbuilder Companion")
-        Button(onClick = {
-            currentContext.startActivity(Intent(currentContext, SignIn::class.java))
-        }){
-            Text(text = "Sign In")
-        }
-        Button(onClick = {
-            currentContext.startActivity(Intent(currentContext, SignUp::class.java))
-        }){
-            Text(text = "Sign Up")
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary
+                ),
+                title = {
+                    Text(
+                        "Flesh & Blood Companion",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+                    rememberTopAppBarState()
+                ),
+            )
+        },
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(color = Color.Gray, fontSize = 20.sp, text = "Sign in or create a new account")
+
+            Button(modifier = Modifier.fillMaxWidth(maxOf(0.50f)), onClick = {
+                currentContext.startActivity(Intent(currentContext, SignIn::class.java))
+            }) {
+                Text(text = "Sign In")
+            }
+
+            Button(modifier = Modifier.fillMaxWidth(maxOf(0.50f)), onClick = {
+                currentContext.startActivity(Intent(currentContext, SignUp::class.java))
+            }) {
+                Text(text = "Sign Up")
+            }
         }
     }
 }

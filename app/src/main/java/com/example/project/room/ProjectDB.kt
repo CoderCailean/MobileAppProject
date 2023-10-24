@@ -5,6 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
+/*
+ * Maintains the Singleton pattern by checking to see if a database instance
+ * exists, if one exists it is returned, if not one is created.
+ */
 @Database(entities = [UserEntity::class, DeckEntity::class, DeckCardEntity::class ], version = 1, exportSchema = false)
 abstract class ProjectDB: RoomDatabase() {
     // Companion Object
@@ -28,8 +32,10 @@ abstract class ProjectDB: RoomDatabase() {
         }
 
     }
-    // Allows access to our custom defined DAO functions
 
+    /*
+     * Allows access to our custom defined DAO functions
+     */
     abstract fun userDAO(): UserDAO
 
     abstract fun deckDAO(): DeckDAO
