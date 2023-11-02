@@ -21,7 +21,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -56,12 +59,14 @@ import com.example.project.ui.theme.ProjectTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.content.ContextCompat.startActivity
 import java.time.Duration
@@ -90,10 +95,13 @@ class SignUp : ComponentActivity() {
 @Composable
 fun SignUpScreen(db: ProjectDB) {
 
+    var showPassword by remember {
+        mutableStateOf(false)
+    }
     var signUpSuccess by remember {
         mutableStateOf(false)
     }
-    var uniqueUserCheck by remember{
+    var uniqueUserCheck by remember {
         mutableStateOf(false)
     }
 
@@ -117,14 +125,15 @@ fun SignUpScreen(db: ProjectDB) {
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 title = {
                     Text(
                         "Sign Up",
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = 30.sp
                     )
                 },
                 scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -138,7 +147,8 @@ fun SignUpScreen(db: ProjectDB) {
                 .padding(paddingValues)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center) {
+            verticalArrangement = Arrangement.Center
+        ) {
 
             OutlinedTextField(
                 value = usernameInput,
@@ -146,59 +156,95 @@ fun SignUpScreen(db: ProjectDB) {
                 label = { Text(text = "Enter a username") },
                 placeholder = { Text(text = "User Name") },
                 shape = RoundedCornerShape(percent = 20),
-                modifier = Modifier.fillMaxWidth(0.75f))
+                modifier = Modifier.fillMaxWidth(0.75f),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary
+                )
+            )
 
-            if(usernameError){
+            if (usernameError) {
                 Text(color = Color.Red, text = "Username must be between 5-12 characters")
             }
-            if(uniqueUserCheck){
+            if (uniqueUserCheck) {
                 Text(color = Color.Red, text = "Username taken")
             }
 
             OutlinedTextField(
                 value = passwordInput,
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (showPassword) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 onValueChange = { et -> passwordInput = et },
                 label = { Text(text = "Enter a password") },
                 placeholder = { Text(text = "Password123...") },
                 shape = RoundedCornerShape(percent = 20),
-                modifier = Modifier.fillMaxWidth(0.75f).padding(vertical = 10.dp))
-
-            if(passwordError){
-                Text(color = Color.Red, text = "Password must be a 7 character minimum")
-            }
-
-            Button(modifier = Modifier.fillMaxWidth(0.50f), onClick = {
-
-                usernameError = usernameInput.length < 5 || usernameInput.length > 12
-
-                passwordError = passwordInput.length < 7
-
-                if(!usernameError){
-                    GlobalScope.launch{
-                        var user = db.userDAO().checkUser(usernameInput)
-                        uniqueUserCheck = user != 0
-                    }
-                }
-
-                if(!usernameError && !passwordError && !uniqueUserCheck) {
-                    GlobalScope.launch {
-                        val user = db.userDAO().addUser(UserEntity(0, usernameInput, passwordInput))
-
-                        val successCheck: Long = -1
-
-                        if (user != successCheck) {
-
-                            var navigate = Intent(currentContext, SignIn::class.java)
-                            navigate.putExtra("FromPage", "SignUp")
-                            currentContext.startActivity(navigate)
+                modifier = Modifier
+                    .fillMaxWidth(0.75f)
+                    .padding(vertical = 10.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary
+                ),
+                trailingIcon = {
+                    if (showPassword) {
+                        IconButton(onClick = { showPassword = false }) {
+                            Icon(
+                                imageVector = Icons.Filled.Visibility,
+                                contentDescription = "hide_password"
+                            )
+                        }
+                    } else {
+                        IconButton(
+                            onClick = { showPassword = true }) {
+                            Icon(
+                                imageVector = Icons.Filled.VisibilityOff,
+                                contentDescription = "hide_password"
+                            )
                         }
                     }
                 }
-            }) {
-                Text(text = "Create User")
+            )
 
+            if (passwordError) {
+                Text(color = Color.Red, text = "Password must be a 7 character minimum")
+            }
+
+            Button(
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                modifier = Modifier.fillMaxWidth(0.50f),
+                onClick = {
+
+                    usernameError = usernameInput.length < 5 || usernameInput.length > 12
+
+                    passwordError = passwordInput.length < 7
+
+                    if (!usernameError) {
+                        GlobalScope.launch {
+                            var user = db.userDAO().checkUser(usernameInput)
+
+                            uniqueUserCheck = user != 0
+
+                            if (!usernameError && !passwordError && !uniqueUserCheck) {
+                                val user = db.userDAO()
+                                    .addUser(UserEntity(0, usernameInput, passwordInput))
+
+                                val successCheck: Long = -1
+
+                                if (user != successCheck) {
+
+                                    var navigate = Intent(currentContext, SignIn::class.java)
+                                    navigate.putExtra("FromPage", "SignUp")
+                                    currentContext.startActivity(navigate)
+                                }
+                            }
+                        }
+                    }
+                }) {
+                Text(text = "Create User")
             }
         }
 

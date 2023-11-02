@@ -1,7 +1,10 @@
 package com.example.project
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,6 +26,8 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -65,6 +70,21 @@ import androidx.core.content.ContextCompat.startActivity
 import java.time.Duration
 
 class MainActivity : ComponentActivity() {
+    // on below line we are creating
+    // a variable for shared preferences.
+    lateinit var sharedPreferences: SharedPreferences
+
+    // on below line we are creating a variable
+    // for prefs key and email key and pwd key.
+    var PREFS_KEY = "prefs"
+    var USER_KEY = "username"
+    var PWD_KEY = "password"
+
+    // on below line we are creating variable
+    // for email as e and password as p.
+    var e = ""
+    var p = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -79,7 +99,34 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        // on below line we are creating a variable for activity.
+        val activity = (this as? Activity)
+
+        // on below line we are initializing our shared preferences.
+        sharedPreferences = getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE)
+
+        // on below line we are initializing our email and pwd
+        // variable setting values from shared preferences.
+        val username = sharedPreferences.getString(USER_KEY, "").toString()
+        val pwd = sharedPreferences.getString(PWD_KEY, "").toString()
+
+        // on below line we are checking if email and pwd are empty or not.
+        if (username != "" && pwd != "") {
+            // if email and pwd are not empty we are opening
+            // a new activity on below line.
+            val navigate = Intent(this, Home::class.java)
+
+            // on below line we are starting our new activity
+            // and finishing our current activity.
+            startActivity(navigate)
+            activity?.finish()
+        }
+    }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,14 +137,15 @@ fun MainScreen() {
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 title = {
                     Text(
                         "Flesh & Blood Companion",
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = 30.sp
                     )
                 },
                 scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -113,17 +161,21 @@ fun MainScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(color = Color.Gray, fontSize = 20.sp, text = "Sign in or create a new account")
+            Text(color = Color.DarkGray, fontSize = 20.sp, text = "Sign in or create a new account")
 
-            Button(modifier = Modifier.fillMaxWidth(maxOf(0.50f)), onClick = {
-                currentContext.startActivity(Intent(currentContext, SignIn::class.java))
-            }) {
+            Button(
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                modifier = Modifier.fillMaxWidth(maxOf(0.50f)),
+                onClick = {
+                    currentContext.startActivity(Intent(currentContext, SignIn::class.java))
+                }) {
                 Text(text = "Sign In")
             }
 
-            Button(modifier = Modifier.fillMaxWidth(maxOf(0.50f)), onClick = {
-                currentContext.startActivity(Intent(currentContext, SignUp::class.java))
-            }) {
+            Button(colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                modifier = Modifier.fillMaxWidth(maxOf(0.50f)), onClick = {
+                    currentContext.startActivity(Intent(currentContext, SignUp::class.java))
+                }) {
                 Text(text = "Sign Up")
             }
         }

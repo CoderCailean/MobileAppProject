@@ -1,6 +1,8 @@
 package com.example.project
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.compose.runtime.getValue
 import androidx.activity.ComponentActivity
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -50,9 +53,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.project.room.DeckEntity
 import com.example.project.room.ProjectDB
+import com.example.project.room.UserEntity
 import com.example.project.ui.theme.ProjectTheme
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class Home : ComponentActivity() {
+
+    // on below line we are creating a variable for our shared preferences.
+    lateinit var sharedPreferences: SharedPreferences
+
+    // on below line we are creating a variable
+    // for prefs key and email key and pwd key.
+    var PREFS_KEY = "prefs"
+    var USER_KEY = "username"
+    var USER_ID_KEY = "userId"
+
+    // on below line we are creating a variable for email
+    var username = ""
+
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -62,14 +82,109 @@ class Home : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    var username = intent.getStringExtra("username")
-                    var userId = intent.getIntExtra("userId", 0)
+                    sharedPreferences = getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE)
+                    username = sharedPreferences.getString(USER_KEY, "").toString()
+                    var userId = sharedPreferences.getInt(USER_ID_KEY, 0)
 
                     var context = LocalContext.current
                     var db = ProjectDB.getInstance(context)
 
                     if (username != null) {
-                        HomeScreen(db, username, userId)
+                        Scaffold(
+                            topBar = {
+                                CenterAlignedTopAppBar(
+                                    colors = TopAppBarDefaults.smallTopAppBarColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        titleContentColor = MaterialTheme.colorScheme.onPrimary
+                                    ),
+                                    title = {
+                                        Text(
+                                            "Home",
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            fontSize = 30.sp
+                                        )
+                                    },
+                                    actions = {
+                                        IconButton(onClick = { /* do something */ }) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Menu,
+                                                contentDescription = "Localized description",
+                                                tint = MaterialTheme.colorScheme.secondary,
+                                                modifier = Modifier.size(120.dp)
+                                            )
+                                        }
+                                    },
+                                    scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+                                        rememberTopAppBarState()
+                                    ),
+                                )
+                            },
+                            bottomBar = {
+                                BottomAppBar(
+                                    modifier = Modifier
+                                        .background(MaterialTheme.colorScheme.primary)
+                                        .height(75.dp)
+                                ) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceAround,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.spacedBy(-10.dp)
+                                        ) {
+                                            IconButton(onClick = { /*TODO*/ }) {
+                                                Icon(
+                                                    imageVector = Icons.Filled.Create,
+                                                    contentDescription = "New Deck",
+                                                    modifier = Modifier.size(30.dp)
+                                                )
+                                            }
+                                            Text(fontSize = 15.sp, text = "Build")
+                                        }
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.spacedBy(-10.dp)
+                                        ) {
+                                            IconButton(onClick = { /*TODO*/ }) {
+                                                Icon(
+                                                    imageVector = Icons.Filled.Home,
+                                                    contentDescription = "Home",
+                                                    modifier = Modifier.size(30.dp)
+                                                )
+                                            }
+                                            Text(fontSize = 15.sp, text = "Home")
+                                        }
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.spacedBy(-10.dp)
+                                        ) {
+                                            IconButton(onClick = {
+                                                var navigate = Intent(context, Account::class.java)
+                                                context.startActivity(navigate)
+                                            }) {
+                                                Icon(
+                                                    imageVector = Icons.Filled.AccountCircle,
+                                                    contentDescription = "Account",
+                                                    modifier = Modifier.size(30.dp)
+                                                )
+                                            }
+                                            Text(fontSize = 15.sp, text = "Account")
+                                        }
+                                    }
+                                }
+                            },
+                        ) { paddingValues ->
+                            Column(modifier = Modifier.padding(paddingValues)) {
+                                Text(
+                                    fontSize = 30.sp,
+                                    text = "Welcome, $username",
+                                    modifier = Modifier.padding(10.dp)
+                                )
+                                UserDecks(db, userId)
+                            }
+                        }
                     }
                 }
             }
@@ -77,81 +192,6 @@ class Home : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HomeScreen(db: ProjectDB, username: String, userId: Int) {
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
-                ),
-                title = {
-                    Text(
-                        "Home",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                actions = {
-                    IconButton(onClick = { /* do something */ }) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Localized description"
-                        )
-                    }
-                },
-                scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-                    rememberTopAppBarState()
-                ),
-            )
-        },
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier.background(MaterialTheme.colorScheme.primary).height(75.dp)
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(-10.dp)) {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Create, contentDescription = "New Deck")
-                        }
-                        Text(fontSize = 15.sp, text = "Build")
-                    }
-                    Column(horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(-10.dp)) {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Home, contentDescription = "Home")
-                        }
-                        Text(fontSize = 15.sp, text = "Home")
-                    }
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(-10.dp)
-                    ) {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(
-                                imageVector = Icons.Filled.AccountCircle,
-                                contentDescription = "Account"
-                            )
-                        }
-                        Text(fontSize = 15.sp, text = "Account")
-                    }
-                }
-            }
-        },
-    ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            Text(fontSize = 25.sp, text = "Welcome, $username")
-            UserDecks(db, userId)
-        }
-    }
-
-}
 
 /*
  * Lists all user decks using a LazyColumn, if any decks exist.

@@ -2,6 +2,11 @@ package com.example.project.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val CustomRed = Color(4290772994)
+val CustomGold = Color(4294498964)
+val CustomBrown = Color(4285024573)
+
+
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
