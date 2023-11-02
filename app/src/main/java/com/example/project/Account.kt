@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.BottomAppBar
@@ -71,7 +73,7 @@ class Account : ComponentActivity() {
                     userId = sharedPreferences.getInt(USER_ID_KEY, 0)
 
                     var context = LocalContext.current
-
+                    val activity = (context as? Activity)
                     Scaffold(
                         topBar = {
                             CenterAlignedTopAppBar(
@@ -86,6 +88,20 @@ class Account : ComponentActivity() {
                                         overflow = TextOverflow.Ellipsis,
                                         fontSize = 30.sp
                                     )
+                                },
+                                navigationIcon = {
+                                    IconButton(onClick = {
+                                        var navigate = Intent(context, Home::class.java)
+                                        context.startActivity(navigate)
+
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Filled.ArrowBack,
+                                            contentDescription = "Localized description",
+                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier.size(120.dp)
+                                        )
+                                    }
                                 },
                                 scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
                                     rememberTopAppBarState()
@@ -109,7 +125,8 @@ class Account : ComponentActivity() {
                                         IconButton(onClick = { /*TODO*/ }) {
                                             Icon(
                                                 imageVector = Icons.Filled.Create,
-                                                contentDescription = "New Deck"
+                                                contentDescription = "New Deck",
+                                                modifier = Modifier.size(30.dp)
                                             )
                                         }
                                         Text(fontSize = 15.sp, text = "Build")
@@ -118,10 +135,14 @@ class Account : ComponentActivity() {
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.spacedBy(-10.dp)
                                     ) {
-                                        IconButton(onClick = { /*TODO*/ }) {
+                                        IconButton(onClick = {
+
+                                            activity?.finish()
+                                        }) {
                                             Icon(
                                                 imageVector = Icons.Filled.Home,
-                                                contentDescription = "Home"
+                                                contentDescription = "Home",
+                                                modifier = Modifier.size(30.dp)
                                             )
                                         }
                                         Text(fontSize = 15.sp, text = "Home")
@@ -131,12 +152,12 @@ class Account : ComponentActivity() {
                                         verticalArrangement = Arrangement.spacedBy(-10.dp)
                                     ) {
                                         IconButton(onClick = {
-                                            var navigate = Intent(context, Account::class.java)
-                                            context.startActivity(navigate)
+                                            activity?.finish()
                                         }) {
                                             Icon(
                                                 imageVector = Icons.Filled.AccountCircle,
-                                                contentDescription = "Account"
+                                                contentDescription = "Account",
+                                                modifier = Modifier.size(30.dp)
                                             )
                                         }
                                         Text(fontSize = 15.sp, text = "Account")
@@ -158,6 +179,14 @@ class Account : ComponentActivity() {
     }
 }
 
+/*
+ * Lists account information and offers sign out option
+ *
+ * @param paddingValues, the padding values passed from the top bar
+ * @param username, the user name of the instance user
+ * @param userId, the userId of the current sharedPreferences object containing instance user valuesnstance user
+ * @param sharedPreferences,
+ */
 @Composable
 fun AccountInformation(
     paddingValues: Modifier,

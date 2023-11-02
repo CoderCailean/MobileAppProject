@@ -216,6 +216,11 @@ fun UserDecks(db: ProjectDB, userId: Int) {
     }
 }
 
+/*
+ * Creates cards to display each individual deck
+ *
+ * @param deckEntity, a deck object
+ */
 @Composable
 fun DeckCard(deckEntity: DeckEntity) {
     Card(

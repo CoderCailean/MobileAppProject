@@ -18,9 +18,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -119,6 +121,7 @@ class SignIn : ComponentActivity() {
                     if (fromPage == "SignUp") {
                         Toast.makeText(context, "Sign up successful", Toast.LENGTH_LONG).show()
                     }
+                    var activity = (context as? Activity)
 
                     Scaffold(
                         topBar = {
@@ -135,6 +138,19 @@ class SignIn : ComponentActivity() {
                                         fontSize = 30.sp
                                     )
                                 },
+                                navigationIcon = {
+                                    IconButton(onClick = {
+                                        activity?.finish()
+
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Filled.ArrowBack,
+                                            contentDescription = "Localized description",
+                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier.size(120.dp)
+                                        )
+                                    }
+                                },
                                 scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
                                     rememberTopAppBarState()
                                 ),
@@ -150,6 +166,13 @@ class SignIn : ComponentActivity() {
     }
 }
 
+/*
+ * Attempts user sign in, if successful, calls a function to save the user data
+ *
+ * @param db, an instance of the ProjectDB database
+ * @param context, an instance of the current context
+ * @param sharedPreferences, the current sharedPreferences object containing instance user values
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun sessionManagement(db: ProjectDB, context: Context, sharedPreferences: SharedPreferences) {
@@ -288,8 +311,15 @@ fun sessionManagement(db: ProjectDB, context: Context, sharedPreferences: Shared
     }
 }
 
-// on below line we are creating a function as save data
-// to save data in our shared preferences.
+/*
+ * Saves the information of the user signing in
+ *
+ * @param username, the username of the user being signed in
+ * @param password, the password of the user being signed in
+ * @param userId, the userId of the user being signed in
+ * @param sharedPreferences, the current sharedPreferences object containing instance user values
+ * @param context, an instance of the current context
+ */
 fun saveData(
     username: String,
     password: String,

@@ -1,6 +1,7 @@
 package com.example.project
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,13 +15,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -91,14 +95,18 @@ class SignUp : ComponentActivity() {
     }
 }
 
+/*
+ * Lists account information and offers sign out option
+ *
+ * @param db, an instance of the ProjectDB database
+ * @param context, an instance of the current context
+ * @param sharedPreferences, the current sharedPreferences object containing instance user values
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(db: ProjectDB) {
 
     var showPassword by remember {
-        mutableStateOf(false)
-    }
-    var signUpSuccess by remember {
         mutableStateOf(false)
     }
     var uniqueUserCheck by remember {
@@ -112,6 +120,7 @@ fun SignUpScreen(db: ProjectDB) {
         mutableStateOf(false)
     }
     var currentContext = LocalContext.current
+    var activity = (currentContext as? Activity)
 
     var usernameInput by remember {
         mutableStateOf("")
@@ -128,6 +137,19 @@ fun SignUpScreen(db: ProjectDB) {
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
+                navigationIcon = {
+                    IconButton(onClick = {
+                        activity?.finish()
+
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Localized description",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(120.dp)
+                        )
+                    }
+                },
                 title = {
                     Text(
                         "Sign Up",
@@ -247,6 +269,5 @@ fun SignUpScreen(db: ProjectDB) {
                 Text(text = "Create User")
             }
         }
-
     }
 }
