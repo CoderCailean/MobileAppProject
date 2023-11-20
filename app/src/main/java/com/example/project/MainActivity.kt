@@ -147,6 +147,12 @@ fun MainScreen() {
                 }) {
                 Text(text = "Sign Up")
             }
+            Button(colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                modifier = Modifier.fillMaxWidth(maxOf(0.50f)), onClick = {
+                    currentContext.startActivity(Intent(currentContext, DeckbuildStart::class.java))
+                }) {
+                Text(text = "Temp API Test")
+            }
         }
     }
 }

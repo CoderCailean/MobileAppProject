@@ -61,3 +61,10 @@ data class DeckCardEntity(
     val setId: Int,
     val deckId: Int,
 )
+
+data class CardEntity(
+    @PrimaryKey(autoGenerate = true)
+    val cardId: Int,
+    val name: String,
+    val setId: String,
+)
