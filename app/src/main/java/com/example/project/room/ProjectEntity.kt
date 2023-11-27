@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.project.model.Printing
 
 /*
  * Establishes the user entity data class
@@ -43,7 +44,7 @@ data class DeckEntity(
  * Establishes the deck card entity data class
  */
 @Entity(
-    indices = [Index("deckId")],
+    indices = [Index("deckId"), Index("cardId")],
     tableName = "deck_cards",
     foreignKeys = [
         ForeignKey(
@@ -51,20 +52,41 @@ data class DeckEntity(
             parentColumns = ["deckId"],
             childColumns = ["deckId"],
             onDelete = 1
+        ),
+        ForeignKey(
+            entity = CardEntity::class,
+            parentColumns = ["cardId"],
+            childColumns = ["cardId"],
+            onDelete = 1
         )
     ]
 )
 data class DeckCardEntity(
     @PrimaryKey(autoGenerate = true)
     val deckCardId: Int,
-    val cardName: String,
-    val setId: Int,
+    val cardId: String,
     val deckId: Int,
 )
 
-data class CardEntity(
-    @PrimaryKey(autoGenerate = true)
-    val cardId: Int,
-    val name: String,
-    val setId: String,
+/**
+ * Establishes the Card entity data class
+ */
+@Entity(
+    tableName = "cards",
 )
+data class CardEntity(
+    @PrimaryKey
+    val cardId: String,
+    val cost: String,
+    val defense: String,
+    val functionalText: String,
+    val functionalTextPlain: String,
+    val health: String,
+    val intelligence: String,
+    val name: String,
+    val pitch: String,
+    val power: String,
+    val typeText: String,
+    val imageUrl: String
+)
+
