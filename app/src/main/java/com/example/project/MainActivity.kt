@@ -203,7 +203,7 @@ fun MainScreen() {
 //
 //@Composable
 //fun userCard(userEntity: UserEntity) {
-//    Card {
+//    com.example.project.model.Card {
 //        Row {
 //            Text(
 //                text = "User Id: " + userEntity.userId,

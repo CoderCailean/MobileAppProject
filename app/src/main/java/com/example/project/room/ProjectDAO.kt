@@ -3,6 +3,7 @@ package com.example.project.room
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
@@ -73,5 +74,23 @@ interface DeckCardDAO {
 
     @Update
     suspend fun updateDeckCard(entity: DeckCardEntity)
+
+}
+
+@Dao
+interface CardDAO {
+
+    // CRUD functionality
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addCard(cardEntity: CardEntity)
+
+    @Query("SELECT * FROM cards")
+    fun getCards(): Flow<List<CardEntity>>
+
+    @Delete
+    suspend fun deleteCard(entity: CardEntity)
+
+    @Update
+    suspend fun updateCard(entity: CardEntity)
 
 }

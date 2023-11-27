@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
  * Maintains the Singleton pattern by checking to see if a database instance
  * exists, if one exists it is returned, if not one is created.
  */
-@Database(entities = [UserEntity::class, DeckEntity::class, DeckCardEntity::class ], version = 1, exportSchema = false)
+@Database(entities = [UserEntity::class, DeckEntity::class, DeckCardEntity::class, CardEntity::class], version = 1, exportSchema = false)
 abstract class ProjectDB: RoomDatabase() {
     // Companion Object
     companion object{
@@ -41,4 +41,6 @@ abstract class ProjectDB: RoomDatabase() {
     abstract fun deckDAO(): DeckDAO
 
     abstract fun deckCardDAO(): DeckCardDAO
+
+    abstract fun cardDAO(): CardDAO
 }

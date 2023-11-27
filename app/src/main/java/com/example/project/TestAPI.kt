@@ -42,9 +42,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import CardItem
+import com.example.project.model.CardItem
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.LaunchedEffect
+import com.example.project.room.ProjectDB
+import com.example.project.room.CardEntity
+import kotlinx.coroutines.GlobalScope
 
 
 class DeckbuildStart : ComponentActivity(){
@@ -109,12 +113,43 @@ class DeckbuildStart : ComponentActivity(){
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val context = LocalContext.current
+                    val db = ProjectDB.getInstance(context)
+
+                    dbCards(db = db)
                     DeckbuildScreen()
                 }
             }
         }
     }
 
+
+    @Composable
+    fun dbCards(db : ProjectDB){
+
+        val cards = getData()
+        val cardDB = db.cardDAO()
+
+        LaunchedEffect(cards){
+                for (card in cards) {
+                    val cardEntry = cardDB.addCard(
+                        CardEntity(
+                            card.unique_id,
+                            card.cost,
+                            card.defense,
+                            card.functional_text,
+                            card.functional_text_plain,
+                            card.health,
+                            card.intelligence,
+                            card.name,
+                            card.pitch,
+                            card.power,
+                            card.type_text,
+                            card.printings[0].image_url
+                        )
+                    )
+            }
+        }
+    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -151,26 +186,13 @@ class DeckbuildStart : ComponentActivity(){
                 verticalArrangement = Arrangement.Center
             )
             {
-                Card(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth(maxOf(0.90f))
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        Text("Sample Card", Modifier.padding(horizontal = 5.dp))
-                        Box(modifier = Modifier.fillMaxWidth(0.75f))
 
-                    }
-                }
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    //Add Card values here
+                    //Add com.example.project.model.Card values here
                     items(items = cards) { item ->
                         Card(
                             modifier = Modifier
@@ -181,7 +203,7 @@ class DeckbuildStart : ComponentActivity(){
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceAround
                             ) {
-                                Text(text = item.name, Modifier.padding(horizontal = 5.dp))
+                                Text(text = item.name + " (" + item.pitch + ")", Modifier.padding(horizontal = 5.dp))
                                 Box(modifier = Modifier.fillMaxWidth(0.75f))
 
                             }

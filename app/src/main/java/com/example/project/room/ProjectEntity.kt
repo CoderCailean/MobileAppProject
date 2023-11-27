@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import Printing
+import com.example.project.model.Printing
 
 /*
  * Establishes the user entity data class
@@ -44,7 +44,7 @@ data class DeckEntity(
  * Establishes the deck card entity data class
  */
 @Entity(
-    indices = [Index("deckId")],
+    indices = [Index("deckId"), Index("cardId")],
     tableName = "deck_cards",
     foreignKeys = [
         ForeignKey(
@@ -52,49 +52,41 @@ data class DeckEntity(
             parentColumns = ["deckId"],
             childColumns = ["deckId"],
             onDelete = 1
+        ),
+        ForeignKey(
+            entity = CardEntity::class,
+            parentColumns = ["cardId"],
+            childColumns = ["cardId"],
+            onDelete = 1
         )
     ]
 )
 data class DeckCardEntity(
     @PrimaryKey(autoGenerate = true)
     val deckCardId: Int,
-    val cardName: String,
-    val setId: Int,
+    val cardId: String,
     val deckId: Int,
 )
 
+/**
+ * Establishes the Card entity data class
+ */
+@Entity(
+    tableName = "cards",
+)
 data class CardEntity(
     @PrimaryKey
-    val unique_id: String,
-    val abilities_and_effects: List<Any>,
-    val ability_and_effect_keywords: List<Any>,
-    val blitz_banned: Boolean,
-    val blitz_legal: Boolean,
-    val blitz_living_legend: Boolean,
-    val blitz_suspended: Boolean,
-    val card_keywords: List<Any>,
-    val cc_banned: Boolean,
-    val cc_legal: Boolean,
-    val cc_living_legend: Boolean,
-    val cc_suspended: Boolean,
-    val commoner_banned: Boolean,
-    val commoner_legal: Boolean,
-    val commoner_suspended: Boolean,
+    val cardId: String,
     val cost: String,
     val defense: String,
-    val functional_text: String,
-    val functional_text_plain: String,
-    val granted_keywords: List<Any>,
+    val functionalText: String,
+    val functionalTextPlain: String,
     val health: String,
     val intelligence: String,
-    val interacts_with_keywords: List<Any>,
     val name: String,
     val pitch: String,
-    val played_horizontally: Boolean,
     val power: String,
-    val printings: List<Printing>,
-    val removed_keywords: List<Any>,
-    val type_text: String,
-    val types: List<String>,
-    val upf_banned: Boolean
+    val typeText: String,
+    val imageUrl: String
 )
+
