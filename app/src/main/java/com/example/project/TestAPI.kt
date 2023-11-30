@@ -129,6 +129,7 @@ class DeckbuildStart : ComponentActivity(){
         val cards = getData()
         val cardDB = db.cardDAO()
 
+
         LaunchedEffect(cards){
                 for (card in cards) {
                     val cardEntry = cardDB.addCard(

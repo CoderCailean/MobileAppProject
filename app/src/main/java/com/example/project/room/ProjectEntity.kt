@@ -87,6 +87,6 @@ data class CardEntity(
     val pitch: String,
     val power: String,
     val typeText: String,
-    val imageUrl: String
+    val imageUrl: String?
 )
 

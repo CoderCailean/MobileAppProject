@@ -87,6 +87,9 @@ interface CardDAO {
     @Query("SELECT * FROM cards")
     fun getCards(): Flow<List<CardEntity>>
 
+    @Query("SELECT COUNT(cardId) FROM cards")
+    fun getRowCount(): Int
+
     @Delete
     suspend fun deleteCard(entity: CardEntity)
 
