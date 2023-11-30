@@ -33,9 +33,9 @@
             android:label="@string/title_activity_sign_in"
             android:theme="@style/Theme.Project" />
         <activity
-            android:name=".DeckbuildStart"
+            android:name=".SelectHero"
             android:exported="false"
-            android:label="DeckbuildStart"
+            android:label="SelectHero"
             android:theme="@style/Theme.Project" />
         <activity
             android:name=".MainActivity"

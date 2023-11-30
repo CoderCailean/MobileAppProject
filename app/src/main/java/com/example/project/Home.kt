@@ -134,7 +134,10 @@ class Home : ComponentActivity() {
                                             horizontalAlignment = Alignment.CenterHorizontally,
                                             verticalArrangement = Arrangement.spacedBy(-10.dp)
                                         ) {
-                                            IconButton(onClick = { /*TODO*/ }) {
+                                            IconButton(onClick = {
+                                                var navigate = Intent(context, SelectHero::class.java)
+                                                context.startActivity(navigate)
+                                                }) {
                                                 Icon(
                                                     imageVector = Icons.Filled.Create,
                                                     contentDescription = "New Deck",
@@ -190,6 +193,8 @@ class Home : ComponentActivity() {
             }
         }
     }
+
+
 }
 
 

@@ -131,23 +131,23 @@ class DeckbuildStart : ComponentActivity(){
 
 
         LaunchedEffect(cards){
-                for (card in cards) {
-                    val cardEntry = cardDB.addCard(
-                        CardEntity(
-                            card.unique_id,
-                            card.cost,
-                            card.defense,
-                            card.functional_text,
-                            card.functional_text_plain,
-                            card.health,
-                            card.intelligence,
-                            card.name,
-                            card.pitch,
-                            card.power,
-                            card.type_text,
-                            card.printings[0].image_url
-                        )
+            for (card in cards) {
+                val cardEntry = cardDB.addCard(
+                    CardEntity(
+                        card.unique_id,
+                        card.cost,
+                        card.defense,
+                        card.functional_text,
+                        card.functional_text_plain,
+                        card.health,
+                        card.intelligence,
+                        card.name,
+                        card.pitch,
+                        card.power,
+                        card.type_text,
+                        card.printings[0].image_url
                     )
+                )
             }
         }
     }

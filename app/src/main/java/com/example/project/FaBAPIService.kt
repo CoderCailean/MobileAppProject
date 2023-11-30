@@ -10,5 +10,4 @@ interface FaBAPIService {
     @GET("card.json")
     fun getCards () : Call <ArrayList<CardItem>>
 
-
 }

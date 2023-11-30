@@ -90,6 +90,9 @@ interface CardDAO {
     @Query("SELECT COUNT(cardId) FROM cards")
     fun getRowCount(): Int
 
+    @Query("SELECT * FROM cards WHERE typeText like '%hero%'")
+    fun getHeroes(): Flow<List<CardEntity>>
+
     @Delete
     suspend fun deleteCard(entity: CardEntity)
 
