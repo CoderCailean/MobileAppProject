@@ -122,7 +122,11 @@ class Account : ComponentActivity() {
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.spacedBy(-10.dp)
                                     ) {
-                                        IconButton(onClick = { /*TODO*/ }) {
+                                        IconButton(onClick = {
+                                            val navigate = Intent(context, DeckBuilder::class.java)
+                                            context.startActivity(navigate)
+                                            activity?.finish()
+                                        }) {
                                             Icon(
                                                 imageVector = Icons.Filled.Create,
                                                 contentDescription = "New Deck",
@@ -136,7 +140,8 @@ class Account : ComponentActivity() {
                                         verticalArrangement = Arrangement.spacedBy(-10.dp)
                                     ) {
                                         IconButton(onClick = {
-
+                                            val navigate = Intent(context, Home::class.java)
+                                            context.startActivity(navigate)
                                             activity?.finish()
                                         }) {
                                             Icon(
@@ -152,7 +157,7 @@ class Account : ComponentActivity() {
                                         verticalArrangement = Arrangement.spacedBy(-10.dp)
                                     ) {
                                         IconButton(onClick = {
-                                            activity?.finish()
+                                            // Nothing to program here
                                         }) {
                                             Icon(
                                                 imageVector = Icons.Filled.AccountCircle,

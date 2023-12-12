@@ -1,5 +1,6 @@
 package com.example.project
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -87,6 +88,7 @@ class Home : ComponentActivity() {
                     var userId = sharedPreferences.getInt(USER_ID_KEY, 0)
 
                     var context = LocalContext.current
+                    val activity = (context as? Activity)
                     var db = ProjectDB.getInstance(context)
 
                     if (username != null) {
@@ -134,7 +136,11 @@ class Home : ComponentActivity() {
                                             horizontalAlignment = Alignment.CenterHorizontally,
                                             verticalArrangement = Arrangement.spacedBy(-10.dp)
                                         ) {
-                                            IconButton(onClick = { /*TODO*/ }) {
+                                            IconButton(onClick = {
+                                                val navigate = Intent(context, DeckBuilder::class.java)
+                                                context.startActivity(navigate)
+                                                activity?.finish()
+                                            }) {
                                                 Icon(
                                                     imageVector = Icons.Filled.Create,
                                                     contentDescription = "New Deck",
@@ -147,7 +153,7 @@ class Home : ComponentActivity() {
                                             horizontalAlignment = Alignment.CenterHorizontally,
                                             verticalArrangement = Arrangement.spacedBy(-10.dp)
                                         ) {
-                                            IconButton(onClick = { /*TODO*/ }) {
+                                            IconButton(onClick = { /*NO CODE HERE*/ }) {
                                                 Icon(
                                                     imageVector = Icons.Filled.Home,
                                                     contentDescription = "Home",
@@ -163,6 +169,7 @@ class Home : ComponentActivity() {
                                             IconButton(onClick = {
                                                 var navigate = Intent(context, Account::class.java)
                                                 context.startActivity(navigate)
+                                                activity?.finish()
                                             }) {
                                                 Icon(
                                                     imageVector = Icons.Filled.AccountCircle,
@@ -233,7 +240,7 @@ fun DeckCard(deckEntity: DeckEntity) {
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Text(text = deckEntity.deckName, Modifier.padding(horizontal = 5.dp))
-            Box(modifier = Modifier.fillMaxWidth(0.75f))
+            Box(modifier = Modifier.weight(1f))
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(imageVector = Icons.Default.ArrowForward, contentDescription = "View")
             }

@@ -1,5 +1,6 @@
 package com.example.project.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -43,10 +44,13 @@ interface DeckDAO {
 
     // CRUD functionality
     @Insert
-    suspend fun addDeck(deckEntity: DeckEntity)
+    suspend fun addDeck(deckEntity: DeckEntity): Long
 
     @Query("SELECT * FROM decks WHERE userId = :userId")
     fun getDecks(userId: Int): Flow<List<DeckEntity>>
+
+    @Query("SELECT * FROM decks WHERE userId = :userId AND deckName = :deckName")
+    fun getDeck(userId: Int, deckName: String): DeckEntity
 
     @Delete
     suspend fun deleteDeck(entity: DeckEntity)

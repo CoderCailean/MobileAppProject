@@ -168,9 +168,9 @@ fun dbCards(db : ProjectDB){
     LaunchedEffect(cards){
         GlobalScope.launch {
             var cardCount = cardDB.getRowCount()
-            Log.d("Count", cardCount.toString())
-
-            if(cardCount == 0){
+            Log.d("DB Count", cardCount.toString())
+            Log.d("API Count", cards.count().toString())
+            if(cardCount != cards.count()){
                 for (card in cards) {
                     val cardEntry = cardDB.addCard(
                         CardEntity(
